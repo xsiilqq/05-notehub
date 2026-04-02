@@ -1,13 +1,15 @@
-import ReactPaginate from "react-paginate";
+import type { ComponentType } from "react";
+import ReactPaginateModule from "react-paginate";
+import type { ReactPaginateProps } from "react-paginate";
 import css from "./Pagination.module.css";
 
-const Paginate =
-  (ReactPaginate as unknown as { default: typeof ReactPaginate }).default ||
-  ReactPaginate;
+type ModuleWithDefault<T> = { default: T };
 
-interface PageChangeEvent {
-  selected: number;
-}
+const ReactPaginate = (
+  ReactPaginateModule as unknown as ModuleWithDefault<
+    ComponentType<ReactPaginateProps>
+  >
+).default;
 
 interface PaginationProps {
   pageCount: number;
@@ -15,19 +17,17 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination = ({
+export default function Pagination({
   pageCount,
   currentPage,
   onPageChange,
-}: PaginationProps) => {
+}: PaginationProps) {
   return (
-    <Paginate
+    <ReactPaginate
       pageCount={pageCount}
       pageRangeDisplayed={5}
       marginPagesDisplayed={1}
-      onPageChange={({ selected }: PageChangeEvent) =>
-        onPageChange(selected + 1)
-      }
+      onPageChange={({ selected }) => onPageChange(selected + 1)}
       forcePage={currentPage - 1}
       containerClassName={css.pagination}
       activeClassName={css.active}
@@ -35,6 +35,4 @@ const Pagination = ({
       previousLabel="←"
     />
   );
-};
-
-export default Pagination;
+}
